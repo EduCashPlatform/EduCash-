@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EduCash Admin Dashboard</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<nav><a class="logo" href="index.html">🎓 Edu<span>Cash</span></a>
+<div class="navlinks"><a class="active" href="admin.html">Admin Dashboard</a><a href="index.html">View Website</a></div>
+<div class="actions"><button class="btn outline" onclick="resetDemo()">Reset Demo Data</button></div></nav>
+<div class="container section">
+<h1>Admin Dashboard</h1><p class="muted">Demo control panel for managing EduCash content. This is not secure enough for production use.</p>
+<div class="stats" id="stats"></div>
+
+<section class="section"><div class="sectionhead"><div><h2>Study Resources</h2><p class="muted">Review and publish uploaded resources.</p></div><button class="btn green" onclick="addResource()">Add Resource</button></div><div class="card" id="resources"></div></section>
+<section class="section"><div class="sectionhead"><div><h2>Earning Opportunities</h2><p class="muted">Moderate listings before they appear publicly.</p></div><button class="btn green" onclick="addJob()">Add Job</button></div><div class="card" id="jobs"></div></section>
+<section class="section"><div class="sectionhead"><div><h2>Users</h2><p class="muted">Demo account overview.</p></div></div><div class="card" id="users"></div></section>
+
+<div class="notice"><b>Production checklist:</b> replace this demo dashboard with server-side authentication, role permissions, database rules, audit logs, moderation, secure file uploads and payment verification before deployment.</div>
+</div>
+<footer><p>© 2026 EduCash Admin</p></footer>
+<script src="data.js"></script><script>
+let db=loadDB();
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function render(){
+document.getElementById('stats').innerHTML=
+`<div class="stat"><strong>${db.users.length}</strong><div class="muted">Users</div></div>
+<div class="stat"><strong>${db.resources.length}</strong><div class="muted">Resources</div></div>
+<div class="stat"><strong>${db.jobs.length}</strong><div class="muted">Jobs</div></div>
+<div class="stat"><strong>0</strong><div class="muted">Premium payments</div></div>`;
+document.getElementById('resources').innerHTML=db.resources.map((r,i)=>`<div class="job"><div><b>${esc(r.title)}</b><div class="muted">${esc(r.category)} • ${esc(r.type)} • ${esc(r.status)}</div></div><button class="btn ${r.status==='Published'?'outline':'green'}" onclick="toggleResource(${i})">${r.status==='Published'?'Unpublish':'Publish'}</button></div>`).join('');
+document.getElementById('jobs').innerHTML=db.jobs.map((j,i)=>`<div class="job"><div><b>${esc(j.title)}</b><div class="muted">${esc(j.category)} • ${esc(j.status)} • Reports: ${j.reported}</div></div><div><button class="btn green" onclick="approveJob(${i})">Approve</button> <button class="btn outline" onclick="reportJob(${i})">Report</button></div></div>`).join('');
+document.getElementById('users').innerHTML=db.users.map(u=>`<div class="job"><div><b>${esc(u.name)}</b><div class="muted">${esc(u.email)} • ${esc(u.role)}</div></div><span class="tag">${esc(u.status)}</span></div>`).join('');
+}
+function toggleResource(i){db.resources[i].status=db.resources[i].status==='Published'?'Draft':'Published';saveDB(db);render()}
+function approveJob(i){db.jobs[i].status='Published';saveDB(db);render()}
+function reportJob(i){db.jobs[i].reported++;db.jobs[i].status='Under Review';saveDB(db);render()}
+function addResource(){let t=prompt('Resource title');if(!t)return;db.resources.push({id:Date.now(),title:t,category:'General',type:'Notes',status:'Draft'});saveDB(db);render()}
+function addJob(){let t=prompt('Job title');if(!t)return;db.jobs.push({id:Date.now(),title:t,category:'Remote',status:'Pending Review',reported:0});saveDB(db);render()}
+render();
+</script></body></html>

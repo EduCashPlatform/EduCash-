@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EduCash Account</title><link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script><script src="supabase-client.js"></script></head>
+<body>
+<nav><a class="logo" href="index.html">🎓 Edu<span>Cash</span></a><div class="navlinks"><a href="index.html">Home</a><a href="resources.html">Study Resources</a><a href="jobs.html">Earn Money</a><a href="opportunities.html">Scholarships</a></div></nav>
+<div class="container section"><div class="form" style="margin:auto">
+<h1 id="title">Create your EduCash account</h1>
+<p class="muted">Use your email and a password. Your real account will be stored in Supabase when configured.</p>
+<div id="nameWrap"><label>Full name<input id="name" placeholder="Your full name"></label></div>
+<label>Email<input id="email" type="email" placeholder="you@example.com"></label>
+<label>Password<input id="password" type="password" placeholder="At least 8 characters"></label>
+<button class="btn green" style="margin-top:15px;width:100%" id="submit">Create account</button>
+<p id="switch" style="margin-top:15px;font-size:14px">Already have an account? <a href="#" onclick="toggleMode();return false" style="color:#0b63ce;font-weight:800">Log in</a></p>
+<div class="notice" id="msg" style="display:none"></div>
+</div></div>
+<script>
+let signup=true;
+function toggleMode(){signup=!signup;document.getElementById('title').textContent=signup?'Create your EduCash account':'Log in to EduCash';document.getElementById('nameWrap').style.display=signup?'block':'none';document.getElementById('submit').textContent=signup?'Create account':'Log in';document.getElementById('switch').innerHTML=signup?'Already have an account? <a href="#" onclick="toggleMode();return false" style="color:#0b63ce;font-weight:800">Log in</a>':'New to EduCash? <a href="#" onclick="toggleMode();return false" style="color:#0b63ce;font-weight:800">Create account</a>'}
+async function submit(){
+ const msg=document.getElementById('msg');msg.style.display='block';msg.textContent='Please wait...';
+ try{
+  if(signup){await signUpWithSupabase(document.getElementById('name').value.trim(),document.getElementById('email').value.trim(),document.getElementById('password').value);msg.textContent='Account created. Check your email if email confirmation is enabled.'}
+  else{await signInWithSupabase(document.getElementById('email').value.trim(),document.getElementById('password').value);msg.textContent='Login successful. Opening your dashboard...'; setTimeout(()=>location.href='dashboard.html',700)}
+ }catch(e){msg.textContent=e.message||'Something went wrong.'}
+}
+document.getElementById('submit').onclick=submit;
+</script></body></html>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Student Dashboard — EduCash</title><link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="supabase-client.js"></script></head>
+<body>
+<nav><a class="logo" href="index.html">🎓 Edu<span>Cash</span></a><div class="navlinks"><a href="resources.html">Study Resources</a><a href="jobs.html">Earn Money</a><a href="opportunities.html">Scholarships</a></div><div class="actions"><button class="btn outline" id="logout">Log out</button></div></nav>
+<div class="container section">
+<div id="loading" class="empty">Checking your account…</div>
+<div id="app" style="display:none">
+<div class="sectionhead"><div><h1>Welcome, <span id="name">Student</span> 👋</h1><p class="muted">Your EduCash student dashboard.</p></div><a class="btn green" href="resources.html">Find resources</a></div>
+<div class="grid4">
+<div class="card"><div class="icon">📚</div><h3>Saved Resources</h3><strong id="savedCount">0</strong><p class="muted">Materials saved for revision.</p></div>
+<div class="card"><div class="icon">💼</div><h3>Applications</h3><strong id="appCount">0</strong><p class="muted">Your opportunity applications.</p></div>
+<div class="card"><div class="icon">⭐</div><h3>Premium</h3><strong id="premium">Free</strong><p class="muted">Your current membership.</p></div>
+<div class="card"><div class="icon">👤</div><h3>Account</h3><strong id="role">Student</strong><p class="muted">Verified account.</p></div>
+</div>
+<section class="section"><div class="sectionhead"><div><h2>Quick Actions</h2><p class="muted">Keep learning and finding opportunities.</p></div></div><div class="grid">
+<a class="card" href="resources.html"><h3>📖 Browse Study Materials</h3><p class="muted">Find notes and practice materials.</p></a>
+<a class="card" href="jobs.html"><h3>💰 Find Earning Opportunities</h3><p class="muted">Review student-friendly opportunities.</p></a>
+<a class="card" href="opportunities.html"><h3>🎓 Scholarships & Internships</h3><p class="muted">Explore education and career opportunities.</p></a>
+</div></section>
+<div class="premium"><h2>EduCash Premium</h2><p>Premium can provide exclusive study packs, advanced quizzes and career tools. Payment will be connected through the secure server payment flow.</p><button class="btn" style="background:#f3c43e" onclick="alert('Premium payment setup is ready for server integration. No payment is taken in this demo.')">Upgrade</button></div>
+</div></div>
+<footer><p>© 2026 EduCash — Learn Today. Earn Tomorrow.</p></footer>
+<script>
+async function start(){
+ const loading=document.getElementById('loading');
+ try{
+  const sb=initSupabase();
+  if(!sb){loading.innerHTML='Supabase is not configured yet. Use <a href="account.html" style="color:#0b63ce">Account</a> to configure your connection.';return}
+  const {data,error}=await sb.auth.getUser();
+  if(error||!data.user){location.href='account.html';return}
+  document.getElementById('name').textContent=data.user.user_metadata?.full_name || data.user.email.split('@')[0];
+  document.getElementById('app').style.display='block';loading.style.display='none';
+ }catch(e){loading.textContent=e.message||'Unable to load your account.'}
+}
+document.getElementById('logout').onclick=async()=>{try{await signOutSupabase();location.href='index.html'}catch(e){alert(e.message)}};
+start();
+</script></body></html>
