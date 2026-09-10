@@ -1,0 +1,57 @@
+const data = {
+  resources: [
+    {
+      title: "Political Science Notes",
+      cat: "Political Science",
+      desc: "Lecture notes and revision materials for Political Science students."
+    },
+    {
+      title: "Political Science Practice Questions",
+      cat: "Political Science",
+      desc: "Practice questions to help you prepare for your examinations."
+    },
+    {
+      title: "Business Studies Notes",
+      cat: "Business",
+      desc: "Study notes and revision materials for Business students."
+    },
+    {
+      title: "Computer Science Notes",
+      cat: "Computer Science",
+      desc: "Study notes and revision materials for Computer Science students."
+    },
+    {
+      title: "Social Science Notes",
+      cat: "Social Science",
+      desc: "Study notes and revision materials for Social Science students."
+    }
+  ]
+};
+
+function filterResources(cat, el) {
+  document.querySelectorAll(".filters button").forEach(b => {
+    b.classList.remove("selected");
+  });
+
+  if (el) {
+    el.classList.add("selected");
+  }
+
+  const grid = document.getElementById("resourceGrid");
+
+  const resources = cat === "All"
+    ? data.resources
+    : data.resources.filter(x => x.cat === cat);
+
+  grid.innerHTML = resources.map(r => `
+    <div class="resource">
+      <h3>${r.title}</h3>
+      <p>${r.desc}</p>
+      <small>${r.cat}</small>
+    </div>
+  `).join("");
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  filterResources("All", document.querySelector(".filters button"));
+});
