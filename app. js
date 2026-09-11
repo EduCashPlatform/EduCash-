@@ -29,7 +29,7 @@ const data = {
 };
 
 function filterResources(cat, el) {
-  document.querySelectorAll(".filters button").forEach(b => {
+  document.querySelectorAll(".filters button").forEach(function (b) {
     b.classList.remove("selected");
   });
 
@@ -39,19 +39,26 @@ function filterResources(cat, el) {
 
   const grid = document.getElementById("resourceGrid");
 
-  const resources = cat === "All"
-    ? data.resources
-    : data.resources.filter(x => x.cat === cat);
+  const resources =
+    cat === "All"
+      ? data.resources
+      : data.resources.filter(function (x) {
+          return x.cat === cat;
+        });
 
-  grid.innerHTML = resources.map(r => `
-    <div class="resource">
-      <h3>${r.title}</h3>
-      <p>${r.desc}</p>
-      <small>${r.cat}</small>
-    </div>
-  `).join("");
+  grid.innerHTML = resources
+    .map(function (r) {
+      return `
+        <div class="resource">
+          <h3>${r.title}</h3>
+          <p>${r.desc}</p>
+          <small>${r.cat}</small>
+        </div>
+      `;
+    })
+    .join("");
 }
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   filterResources("All", document.querySelector(".filters button"));
 });
